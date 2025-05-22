@@ -6,7 +6,7 @@ Preisvergleichsportale im Internet ermöglichen es, den aktuell verfügbaren gü
 - Der Agent kann jeden Tag die Entscheidung treffen, ob er zum tagesaktuellen Preis das Produkt kaufen möchte, oder ob er weiter warten will.
 - Da das gewünschte Produkt zu einem bestimmten Zeitpunkt garantiert vorliegen soll, gibt es einen spätestmöglichen Zeitpunkt \( t_{final} \), zu dem der Agent das Produkt kaufen muss. D.h. ein weiteres Warten (auf einen günstigeren Preis) ist dann nicht mehr möglich.
 
-- Der Preis am ersten (\( t = 1 \)) Tag sei \( \mathcal{P}_1 \in \mathbb{N} \).
+- Der Preis am ersten (\( t = 1 \)) Tag sei \( \mathcal{P}_0 \in \mathbb{N} \).
 
 - Aufgrund der auf Angebot und Nachfrage basierenden Gesetze des Marktes nehmen wir an, dass der Preis des Produkts nicht negativ werden kann und sich von Tag zu Tag wie folgt ändert:
 
@@ -27,25 +27,39 @@ MDP = \([T, S, A, p, c]\)
 
 ### A
 
-Aktionsmenge: \(A = \{k, w\}\) 
+Aktionsmenge: \(A = \{a_0, a_1\}\) 
 
-- \(k\) = kaufen; \(w\) = warten
+- \(a_0\) = warten ; \(a_1\) = kaufen 
 - \(A\) ist endlich.
 
 ### S
 Zustandsmenge:
 
+\(S = \{(t,  i) \mid t \in T, i \in \mathbb{W}(\mathcal{P}_{t}) \} \cup \{"0"\} \)
 
-\(S = \{(t,  \mathcal{P}_{t}) \mid t \in T; \forall t \in T, t \geq 2: \mathcal{P}_{t+1} = \max(0, \mathcal{P}_t + k - \delta))\} \cup \{"0"\} \)
+\(\mathbb{W}(\mathcal{P}_{1}) = \{\mathcal{P}_{0}\}, \mathcal{P}_{0} \in \mathbb{N}\)
 
+\(\forall t \in T: \mathbb{W}(\mathcal{P}_{t+1}) = \{ \max(0, \mathcal{P}_t + k - \delta) \mid k \in \{0, \ldots, 2\delta\}, k \sim B(k \mid 2\delta, q), q \in [0,1] \}         \)
 
-- \(k \in \{0, \ldots, 2\delta\}, k \sim B(k \mid 2\delta, q), q \in [0,1]\)
+- \(\mathbb{W}\) = Wertebereich 
 - "0" ist ein Terminalzustand mit folgenden Eigenschaften:
   - "0" ist absorbierend (wird nicht mehr verlassen).
   - Es fallen in ihm keine Kosten mehr an.
-- Umgangssprachlich: Mit Ausnahme vom Terminalzustand, jeder Zustand stellt einen Tag im Beobachtungszeitraum und einen möglichen Preis vom Produkt am Tag dar.
+- Umgangssprachlich: Mit Ausnahme vom Terminalzustand, jeder Zustand stellt einen Tag im Beobachtungszeitraum und einen möglichen Wert des Produktpreises an diesem Tag dar.
 - \(S\) ist endlich, denn \(T\) ist endlich und \(k\) ist beschränkt. 
 
+### c
 
+Direkte Kosten \(c: (S \times A) \setminus \{((N, i),a_0) \mid i \in \mathbb{W}(\mathcal{P}_{N})\}  \rightarrow \mathbb{R} \)
 
+$$
+c(s, a) = 
+\begin{cases}
+i, & \text{falls } s = (t, i) \text{ und } a = a_1 \\
+0, & \text{sonst}
+\end{cases}
+$$
 
+### p
+
+Übergangwahrscheinlichkeiten \(p: S \times A \times S \rightarrow [0,1]\)
