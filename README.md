@@ -55,7 +55,7 @@ Direkte Kosten \(c: (S \times A) \setminus \{((N, i),a_0) \mid i \in \mathbb{W}(
 $$
 c(s, a) = 
 \begin{cases}
-i, & \text{falls } s = (t, i) \text{ und } a = a_1 \\
+i_{s}, & \text{falls } s \neq "0", a = a_1 \\
 0, & \text{sonst}
 \end{cases}
 $$
