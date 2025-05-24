@@ -35,11 +35,11 @@ Aktionsmenge: \(A = \{a_0, a_1\}\)
 ### S
 Zustandsmenge:
 
-\(S = \{(t,  i) \mid t \in T, i \in \mathbb{W}(\mathcal{P}_{t}) \} \cup \{"0"\} \)
+\(S = \{(t,  g) \mid t \in T, g \in \mathbb{W}(\mathcal{P}_{t}) \} \cup \{"0"\} \)
 
 \(\mathbb{W}(\mathcal{P}_{1}) = \{\mathcal{P}_{0}\}, \mathcal{P}_{0} \in \mathbb{N}\)
 
-\(\forall t \in T: \mathbb{W}(\mathcal{P}_{t+1}) = \{ \max(0, \mathcal{P}_t + k - \delta) \mid k \in \{0, \ldots, 2\delta\}, k \sim B(k \mid 2\delta, q), q \in [0,1] \}         \)
+\(\forall t \in T: \mathbb{W}(\mathcal{P}_{t+1}) = \{ \max(0, \mathcal{P}_t + k - \delta) \mid k \in \{0, \ldots, 2\delta\} \}         \)
 
 - \(\mathbb{W}\) = Wertebereich 
 - "0" ist ein Terminalzustand mit folgenden Eigenschaften:
@@ -50,16 +50,48 @@ Zustandsmenge:
 
 ### c
 
-Direkte Kosten \(c: (S \times A) \setminus \{((N, i),a_0) \mid i \in \mathbb{W}(\mathcal{P}_{N})\}  \rightarrow \mathbb{R} \)
+Direkte Kosten \(c: (S \times A) \setminus \{((N, g),a_0) \mid g \in \mathbb{W}(\mathcal{P}_{N})\}  \rightarrow \mathbb{R} \)
 
 $$
 c(s, a) = 
 \begin{cases}
-i_{s}, & \text{falls } s \neq "0", a = a_1 \\
+g_{s}, & \text{falls } s \neq "0" \text{ und } a = a_1 \\
 0, & \text{sonst}
 \end{cases}
 $$
 
+Umgangssprachlich: Kosten entstehen ausschließlich im Moment des Kaufes.
+
 ### p
 
 Übergangwahrscheinlichkeiten \(p: S \times A \times S \rightarrow [0,1]\)
+- "0" ist absorbierend (wird nicht mehr verlassen):
+\[
+\forall a \in A: \quad
+p("0", a, j) =
+\begin{cases}
+1, & \text{falls } j = "0" \\
+0, & \text{sonst}
+\end{cases}
+\]
+- Jeder Kauf (\(a_1\)) bewirkt den sofortigen Übergang in den Terminalzustand.:
+\[
+\forall i, j \in S, i \neq "0": \quad
+p(i, a_1, j) =
+\begin{cases}
+1, & \text{falls } j = "0" \\
+0, & \text{sonst}
+\end{cases}
+\]
+- okokok
+\[
+\forall i, j \in S, i \neq "0": \quad
+p(i, a_0, j) =
+\begin{cases}
+h, & \text{falls } j \neq "0", t_j - t_i = 1 \\
+   & \text{und } g_j = 0 \\
+1 - h, & \text{falls } j \neq "0", t_j - t_i = 1, \\
+   & \text{und } g_j - g_i \in  \{-\delta, \delta\} \\
+0, & \text{sonst} 
+\end{cases}
+\]
