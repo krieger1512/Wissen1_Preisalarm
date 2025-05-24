@@ -83,15 +83,29 @@ p(i, a_1, j) =
 0, & \text{sonst}
 \end{cases}
 \]
-- okokok
+- Für jedes Warten (\(a_0\)):
 \[
 \forall i, j \in S, i \neq "0": \quad
 p(i, a_0, j) =
 \begin{cases}
-h, & \text{falls } j \neq "0", t_j - t_i = 1 \\
+\sum_{m=0}^{\delta - g_i} \binom{2\delta}{m} q^m (1 - q)^{2\delta - m}, & \text{falls } t_j - t_i = 1 \\
+   & \text{und } \exist k \in \{0, \ldots, 2\delta\}: g_j = max(0, g_i + k -\delta)\\
    & \text{und } g_j = 0 \\
-1 - h, & \text{falls } j \neq "0", t_j - t_i = 1, \\
-   & \text{und } g_j - g_i \in  \{-\delta, \delta\} \\
+   & \text{und } \delta - g_i \geq 0 \\
+\binom{2\delta}{h - g_i + \delta} q^{h - g_i + \delta} (1 - q)^{\delta - h + g_i}, & \text{falls } t_j - t_i = 1 \\
+   & \text{und } \exist k \in \{0, \ldots, 2\delta\}:g_j = max(0, g_i + k -\delta)\\
+   & \text{und } g_j = h \gt 0 \\
 0, & \text{sonst} 
 \end{cases}
 \]
+
+  Begründung: 
+  - \(j\) ist ein möglicher Folgezustand von \(i\) nach Ausführung der Aktion \(a_0\), gdw. \(t_j - t_i = 1\) und \(\exist k \in \{0, \ldots, 2\delta\}: g_j = max(0, g_i + k -\delta)\).
+  - Wenn die oberen Bedigungen erfüllt sind:
+    - \(g_j = 0 \Leftrightarrow g_i + k -\delta \leq 0 \Leftrightarrow  k \leq \delta - g_i \Rightarrow P(g_j=0) = P(k \leq \delta - g_i)\) 
+      Da \(k \in \{0, \ldots, 2\delta\},  k \sim B(k \mid 2\delta, q), q \in [0,1]  \), es folgt: 
+
+      Wenn \(\delta - g_i \geq 0\): \(P(k \leq \delta - g_i) = \sum_{m=0}^{\delta - g_i} \binom{2\delta}{m} q^m (1 - q)^{2\delta - m} \)
+    - Aus \(g_j = h \gt 0 \) folgt \(h = g_i + k -\delta \) oder äquivalent \(k = h - g_i + \delta \Rightarrow P(g_j = h) = P(k = h - g_i + \delta)\)
+      Da \(k \in \{0, \ldots, 2\delta\},  k \sim B(k \mid 2\delta, q), q \in [0,1]  \), es folgt:
+      \(P(k = h - g_i + \delta) = \binom{2\delta}{h - g_i + \delta} q^{h - g_i + \delta} (1 - q)^{\delta - h + g_i} \)
