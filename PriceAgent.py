@@ -76,3 +76,5 @@ if __name__ == "__main__":
         for state, action in optimal_policy.items():
             f.write(f"{state}: {action}\n")
     print("Optimal policy extracted and saved.")
+
+# %%
