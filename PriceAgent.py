@@ -17,7 +17,7 @@ class PriceAgent:
         """
         Learns the optimal value function for each state using the Value Iteration algorithm.
         """
-        V = {state: state[1] for state in self.sim.S if state != "0"}
+        V = {state: 0 for state in self.sim.S if state != "0"}
         V["0"] = 0  # Terminal state has value 0
         update_count = 0
         while True:
@@ -34,7 +34,7 @@ class PriceAgent:
             if all(abs(new_V[state] - V[state]) < 1e-6 for state in self.sim.S):
                 break
             else:
-                V = new_V
+                V = new_V.copy()
                 update_count += 1
                 print(f"\t{update_count}-th Iteration ...")
         return V
@@ -69,7 +69,10 @@ if __name__ == "__main__":
 
     print("Starting Value Iteration ...")
     optimal_V = agent.learn_optimal_value_function()
-    print("Optimal value function learned.")
+    with open(f"optimal_V.txt", "w") as f:
+        for state, value_function in optimal_V.items():
+            f.write(f"{state}: {value_function}\n")
+    print("Optimal value function learned and saved.")
 
     print("Extracting optimal policy ...")
     optimal_policy = agent.extract_optimal_policy(optimal_V)

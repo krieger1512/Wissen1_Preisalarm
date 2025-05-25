@@ -17,7 +17,7 @@ class PriceSimulation:
         self.q = q
         self.P_0 = P_0
         self.T = list(range(1, N + 1))
-        self.A = ["wait", "buy"]  # wait, buy
+        self.A = ["wait", "buy"]
         self.S = self.generate_states()
 
     def generate_states(self) -> list:
@@ -75,7 +75,10 @@ class PriceSimulation:
             return ["0"]
         elif state != "0" and action == self.A[0]:
             next_day = state[0] + 1
-            return [(next_day, price) for price in self.daily_price_range[next_day]]
+            possible_next_prices = [
+                max(0, state[1] + k - self.delta) for k in range(0, 2 * self.delta + 1)
+            ]
+            return [(next_day, price) for price in set(possible_next_prices)]
 
     def get_direct_cost(self, state, action):
         """
