@@ -1,4 +1,3 @@
-# %%
 from math import comb
 
 
@@ -86,7 +85,7 @@ class PriceSimulation:
 
         :param current_state: The current state
         :param action: The action taken
-        :param subsequent_state: The subsequent state
+        :param next_state: The subsequent state
         :return: Transition probability
         """
         if current_state == "0":
