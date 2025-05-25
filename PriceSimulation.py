@@ -7,6 +7,7 @@ class PriceSimulation:
     def __init__(self, N, delta, q, P_0):
         """
         Initializes the PriceSimulation with the given parameters.
+
         :param N: Number of time steps
         :param delta: Maximum absolute price fluctuation per day
         :param q: Probability of price increase
@@ -23,6 +24,7 @@ class PriceSimulation:
     def generate_states(self) -> list:
         """
         Generates the states of the price simulation.
+
         :param T: List of time points
         :param delta: Maximum absolute price fluctuation per day
         :param P_0: Initial price
@@ -50,9 +52,22 @@ class PriceSimulation:
                 states.append((t, price))
         return states
 
+    def get_possible_actions(self, state) -> list:
+        """
+        Returns the possible actions for a given state.
+
+        :param state: The current state
+        :return: List of possible actions
+        """
+        if state != "0" and state[0] == self.N:
+            return [self.A[1]]  # Only buy in the last time step
+        else:
+            return self.A
+
     def get_direct_cost(self, state, action):
         """
         Returns the direct cost of taking an action in a given state.
+
         :param state: The current state
         :param action: The action taken
         :return: Direct cost
@@ -68,6 +83,7 @@ class PriceSimulation:
     def get_transition_probability(self, current_state, action, next_state) -> float:
         """
         Returns the transition probability from the current state to the subsequent state given an action.
+
         :param current_state: The current state
         :param action: The action taken
         :param subsequent_state: The subsequent state
@@ -111,11 +127,3 @@ class PriceSimulation:
                 return 0.0
         else:
             return 0.0
-
-
-if __name__ == "__main__":
-    # Example usage
-    sim = PriceSimulation(N=42, delta=5, q=0.5, P_0=300)
-    print("Time Steps:", sim.T)
-    print("Number of states:", len(sim.S))
-    print("Daily Price Range:", sim.daily_price_range)
