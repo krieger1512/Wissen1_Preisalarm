@@ -17,7 +17,8 @@ class PriceAgent:
         """
         Learns the optimal value function for each state using the Value Iteration algorithm.
         """
-        V = {state: 0 for state in self.sim.S}
+        V = {state: state[1] for state in self.sim.S if state != "0"}
+        V["0"] = 0  # Terminal state has value 0
         update_count = 0
         while True:
             new_V = {}
@@ -27,7 +28,7 @@ class PriceAgent:
                     expected_costs[a] = sum(
                         self.sim.get_transition_probability(i, a, j)
                         * (self.sim.get_direct_cost(i, a) + self.gamma * V[j])
-                        for j in self.sim.S
+                        for j in self.sim.get_possible_next_states(i, a)
                     )
                 new_V[i] = min(expected_costs.values())
             if all(abs(new_V[state] - V[state]) < 1e-6 for state in self.sim.S):
@@ -52,7 +53,7 @@ class PriceAgent:
                 expected_costs[a] = sum(
                     self.sim.get_transition_probability(i, a, j)
                     * (self.sim.get_direct_cost(i, a) + self.gamma * optimal_V[j])
-                    for j in self.sim.S
+                    for j in self.sim.get_possible_next_states(i, a)
                 )
             policy[i] = min(expected_costs, key=expected_costs.get)
         return policy

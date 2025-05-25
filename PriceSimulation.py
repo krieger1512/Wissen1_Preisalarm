@@ -63,6 +63,20 @@ class PriceSimulation:
         else:
             return self.A
 
+    def get_possible_next_states(self, state, action) -> list:
+        """
+        Returns the possible next states given the current state and action.
+
+        :param state: The current state
+        :param action: The action taken
+        :return: List of possible next states
+        """
+        if state == "0" or (state != "0" and action == self.A[1]):
+            return ["0"]
+        elif state != "0" and action == self.A[0]:
+            next_day = state[0] + 1
+            return [(next_day, price) for price in self.daily_price_range[next_day]]
+
     def get_direct_cost(self, state, action):
         """
         Returns the direct cost of taking an action in a given state.
