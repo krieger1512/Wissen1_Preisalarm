@@ -68,7 +68,7 @@ class PriceAgent:
         return policy
 
 
-def run_sim(N, delta, P_0):
+def run_sim(N, delta, P_0, fixed_q):
     """
     Runs a price simulation with the given parameters and saves the optimal value function and policy.
 
@@ -79,18 +79,19 @@ def run_sim(N, delta, P_0):
     print(f"Running price simulation:")
     print("  *  Parameters:")
     print(f"     ├── N = {N} days")
+    print(f"     ├── delta = {delta}€ (maximum price fluctuation per day)")
+    print(f"     ├── P_0 = {P_0}€ (initial product price)")
     print(
-        f"     ├── delta = {delta} (price fluctuation of a maximum of {delta} euros per day)"
+        f"     └── fixed_q = {fixed_q} (Probability for price increase/decrease is{' ' if fixed_q else ' not '}fixed)"
     )
-    print(f"     └── P_0 = {P_0} (initial product price)")
-    sim = PriceSimulation(N, delta, P_0)
+    sim = PriceSimulation(N, delta, P_0, fixed_q)
     print("  *  Total Number of States:", len(sim.S))
     # print("  *  Daily Price Range:", sim.daily_price_range)
 
     agent = PriceAgent(simulation=sim)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    sim_dir = os.path.join(current_dir, f"{N}_{delta}_{P_0}")
+    sim_dir = os.path.join(current_dir, f"{N}_{delta}_{P_0}_{fixed_q}")
     os.makedirs(sim_dir, exist_ok=True)
 
     print("  *  Starting Value Iteration ...")
@@ -105,11 +106,12 @@ def run_sim(N, delta, P_0):
     with open(os.path.join(sim_dir, "optimal_policy.txt"), "w") as f:
         for state, action in optimal_policy.items():
             f.write(f"{state}: {action}\n")
-    print("     └── Optimal policy extracted and saved.\n")
+    print("     └── Optimal policy extracted and saved.")
+    print(f"  *  Stored results in directory: {N}_{delta}_{P_0}_{fixed_q}\n")
 
 
 if __name__ == "__main__":
     # Run simulations with different parameters
-    run_sim(N=42, delta=5, P_0=300)
-    run_sim(N=10, delta=5, P_0=25)
+    run_sim(N=42, delta=5, P_0=300, fixed_q=True)
+    run_sim(N=10, delta=5, P_0=25, fixed_q=True)
 # %%

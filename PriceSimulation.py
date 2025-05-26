@@ -3,7 +3,7 @@ from math import comb
 
 class PriceSimulation:
 
-    def __init__(self, N, delta, P_0, fixed_q=True):
+    def __init__(self, N, delta, P_0, fixed_q):
         """
         Initializes the PriceSimulation with the given parameters.
 
