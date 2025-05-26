@@ -1,5 +1,6 @@
 # %%
 from PriceSimulation import PriceSimulation
+import os
 
 
 class PriceAgent:
@@ -36,7 +37,7 @@ class PriceAgent:
             else:
                 V = new_V.copy()
                 update_count += 1
-                print(f"\t{update_count}-th Iteration ...")
+        print(f"\tFinished learning with {update_count} iterations.")
         return V
 
     def extract_optimal_policy(self, optimal_V) -> dict:
@@ -59,26 +60,41 @@ class PriceAgent:
         return policy
 
 
-if __name__ == "__main__":
-    # Example usage
-    sim = PriceSimulation(N=42, delta=5, q=0.5, P_0=300)
-    print("Total Number of States:", len(sim.S))
-    print("Daily Price Range:", sim.daily_price_range)
+def run_sim(N, delta, P_0):
+    """ """
+    print(f"Running simulation for N = {N}, delta = {delta}, and P_0 = {P_0} ...")
+    sim = PriceSimulation(N, delta, P_0)
+    # print("\tTotal Number of States:", len(sim.S))
+    # print("\tDaily Price Range:", sim.daily_price_range)
 
     agent = PriceAgent(simulation=sim)
 
-    print("Starting Value Iteration ...")
-    optimal_V = agent.learn_optimal_value_function()
-    with open(f"optimal_V.txt", "w") as f:
-        for state, value_function in optimal_V.items():
-            f.write(f"{state}: {value_function}\n")
-    print("Optimal value function learned and saved.")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    sim_dir = os.path.join(current_dir, f"{N}_{delta}_{P_0}")
+    os.makedirs(sim_dir, exist_ok=True)
 
-    print("Extracting optimal policy ...")
+    print("\tStarting Value Iteration ...")
+    optimal_V = agent.learn_optimal_value_function()
+    with open(os.path.join(sim_dir, "optimal_V.txt"), "w") as f:
+        for state, v in optimal_V.items():
+            f.write(f"{state}: {v}\n")
+    print("\tOptimal value function learned and saved.")
+
+    print("\tExtracting optimal policy ...")
     optimal_policy = agent.extract_optimal_policy(optimal_V)
-    with open(f"optimal_policy.txt", "w") as f:
+    with open(os.path.join(sim_dir, "optimal_policy.txt"), "w") as f:
         for state, action in optimal_policy.items():
             f.write(f"{state}: {action}\n")
-    print("Optimal policy extracted and saved.")
+    print("\tOptimal policy extracted and saved.\n")
 
-# %%
+
+if __name__ == "__main__":
+    # Param range
+    N_range = [21, 42]
+    delta_range = [5, 10]
+    P_0_range = [150, 300, 600]
+
+    for N in N_range:
+        for delta in delta_range:
+            for P_0 in P_0_range:
+                run_sim(N, delta, P_0)
