@@ -56,7 +56,11 @@ class PriceAgent:
                     * (self.sim.get_direct_cost(i, a) + self.gamma * optimal_V[j])
                     for j in self.sim.get_possible_next_states(i, a)
                 )
-            policy[i] = min(expected_costs, key=expected_costs.get)
+            policy[i] = (
+                str(expected_costs)
+                + " => "
+                + min(expected_costs, key=expected_costs.get)
+            )
         return policy
 
 
@@ -98,3 +102,5 @@ if __name__ == "__main__":
         for delta in delta_range:
             for P_0 in P_0_range:
                 run_sim(N, delta, P_0)
+
+# %%

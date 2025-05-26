@@ -3,19 +3,20 @@ from math import comb
 
 class PriceSimulation:
 
-    def __init__(self, N, delta, P_0, q=0.5):
+    def __init__(self, N, delta, P_0, fixed_q=True):
         """
         Initializes the PriceSimulation with the given parameters.
 
         :param N: Number of time steps
         :param delta: Maximum absolute price fluctuation per day
-        :param q: Probability of price increase
         :param P_0: Initial price
+        :param fixed_q: Whether to use fixed q
         """
         self.N = N
         self.delta = delta
-        self.q = q
         self.P_0 = P_0
+        self.fixed_q = fixed_q
+
         self.T = list(range(1, N + 1))
         self.A = ["wait", "buy"]
         self.S = self.generate_states()
@@ -24,9 +25,6 @@ class PriceSimulation:
         """
         Generates the states of the price simulation.
 
-        :param T: List of time points
-        :param delta: Maximum absolute price fluctuation per day
-        :param P_0: Initial price
         :return: List of states
         """
         daily_price_range = {
@@ -120,11 +118,13 @@ class PriceSimulation:
                 next_state[1] == max(0, current_state[1] + k - self.delta)
                 for k in range(0, 2 * self.delta + 1)
             ):
+                if self.fixed_q:
+                    q = 0.5
+                else:
+                    q = self.P_0 / (2 * current_state[1])  # TODO
                 if next_state[1] == 0 and self.delta - current_state[1] >= 0:
                     return sum(
-                        comb(2 * self.delta, m)
-                        * self.q**m
-                        * (1 - self.q) ** (2 * self.delta - m)
+                        comb(2 * self.delta, m) * q**m * (1 - q) ** (2 * self.delta - m)
                         for m in range(0, self.delta - current_state[1] + 1)
                     )
                 elif next_state[1] > 0:
@@ -133,9 +133,8 @@ class PriceSimulation:
                             2 * self.delta,
                             next_state[1] - current_state[1] + self.delta,
                         )
-                        * self.q ** (next_state[1] - current_state[1] + self.delta)
-                        * (1 - self.q)
-                        ** (self.delta - next_state[1] + current_state[1])
+                        * q ** (next_state[1] - current_state[1] + self.delta)
+                        * (1 - q) ** (self.delta - next_state[1] + current_state[1])
                     )
                 else:
                     return 0.0
