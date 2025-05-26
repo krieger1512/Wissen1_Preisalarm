@@ -23,6 +23,7 @@ class PriceAgent:
         update_count = 0
         while True:
             new_V = {}
+            # temp = {}
             for i in self.sim.S:
                 expected_costs = {}
                 for a in self.sim.get_possible_actions(i):
@@ -31,13 +32,16 @@ class PriceAgent:
                         * (self.sim.get_direct_cost(i, a) + self.gamma * V[j])
                         for j in self.sim.get_possible_next_states(i, a)
                     )
+                # temp[i] = expected_costs.copy()
                 new_V[i] = min(expected_costs.values())
             if all(abs(new_V[state] - V[state]) < 1e-6 for state in self.sim.S):
+                # print(f"     {temp}")
                 break
             else:
                 V = new_V.copy()
+                # print(f"     {temp}")
                 update_count += 1
-        print(f"\tFinished learning with {update_count} iterations.")
+        print(f"     ├── Finished learning with {update_count} iterations.")
         return V
 
     def extract_optimal_policy(self, optimal_V) -> dict:
@@ -65,11 +69,23 @@ class PriceAgent:
 
 
 def run_sim(N, delta, P_0):
-    """ """
-    print(f"Running simulation for N = {N}, delta = {delta}, and P_0 = {P_0} ...")
+    """
+    Runs a price simulation with the given parameters and saves the optimal value function and policy.
+
+    :param N: Number of days in the simulation
+    :param delta: Maximum price fluctuation per day
+    :param P_0: Initial product price
+    """
+    print(f"Running price simulation:")
+    print("  *  Parameters:")
+    print(f"     ├── N = {N} days")
+    print(
+        f"     ├── delta = {delta} (price fluctuation of a maximum of {delta} euros per day)"
+    )
+    print(f"     └── P_0 = {P_0} (initial product price)")
     sim = PriceSimulation(N, delta, P_0)
-    # print("\tTotal Number of States:", len(sim.S))
-    # print("\tDaily Price Range:", sim.daily_price_range)
+    print("  *  Total Number of States:", len(sim.S))
+    # print("  *  Daily Price Range:", sim.daily_price_range)
 
     agent = PriceAgent(simulation=sim)
 
@@ -77,30 +93,23 @@ def run_sim(N, delta, P_0):
     sim_dir = os.path.join(current_dir, f"{N}_{delta}_{P_0}")
     os.makedirs(sim_dir, exist_ok=True)
 
-    print("\tStarting Value Iteration ...")
+    print("  *  Starting Value Iteration ...")
     optimal_V = agent.learn_optimal_value_function()
     with open(os.path.join(sim_dir, "optimal_V.txt"), "w") as f:
         for state, v in optimal_V.items():
             f.write(f"{state}: {v}\n")
-    print("\tOptimal value function learned and saved.")
+    print("     └── Optimal value function learned and saved.")
 
-    print("\tExtracting optimal policy ...")
+    print("  *  Extracting optimal policy ...")
     optimal_policy = agent.extract_optimal_policy(optimal_V)
     with open(os.path.join(sim_dir, "optimal_policy.txt"), "w") as f:
         for state, action in optimal_policy.items():
             f.write(f"{state}: {action}\n")
-    print("\tOptimal policy extracted and saved.\n")
+    print("     └── Optimal policy extracted and saved.\n")
 
 
 if __name__ == "__main__":
-    # Param range
-    N_range = [21, 42]
-    delta_range = [5, 10]
-    P_0_range = [150, 300, 600]
-
-    for N in N_range:
-        for delta in delta_range:
-            for P_0 in P_0_range:
-                run_sim(N, delta, P_0)
-
+    # Run simulations with different parameters
+    run_sim(N=42, delta=5, P_0=300)
+    run_sim(N=10, delta=5, P_0=25)
 # %%
