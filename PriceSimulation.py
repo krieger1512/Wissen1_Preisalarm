@@ -121,7 +121,11 @@ class PriceSimulation:
                 if self.fixed_q:
                     q = 0.5
                 else:
-                    q = self.P_0 / (2 * current_state[1])  # TODO
+                    q = (
+                        1 - current_state[1] / (2 * self.P_0)
+                        if current_state[1] <= 2 * self.P_0
+                        else 0.0
+                    )
                 if next_state[1] == 0 and self.delta - current_state[1] >= 0:
                     return sum(
                         comb(2 * self.delta, m) * q**m * (1 - q) ** (2 * self.delta - m)
