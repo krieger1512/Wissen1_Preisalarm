@@ -60,11 +60,18 @@ class PriceAgent:
                     * (self.sim.get_direct_cost(i, a) + self.gamma * optimal_V[j])
                     for j in self.sim.get_possible_next_states(i, a)
                 )
+            min_expected_cost = min(expected_costs.values())
             policy[i] = (
                 str(expected_costs)
                 + " => "
-                + min(expected_costs, key=expected_costs.get)
-            )
+                + str(
+                    [
+                        key
+                        for key, value in expected_costs.items()
+                        if value == min_expected_cost
+                    ]
+                )
+            ).replace("'", "")
         return policy
 
 
@@ -75,6 +82,7 @@ def run_sim(N, delta, P_0, fixed_q):
     :param N: Number of days in the simulation
     :param delta: Maximum price fluctuation per day
     :param P_0: Initial product price
+    :param fixed_q: Whether the probability for price increase is fixed
     """
     print(f"Running price simulation:")
     print("  *  Parameters:")
@@ -82,7 +90,7 @@ def run_sim(N, delta, P_0, fixed_q):
     print(f"     ├── delta = {delta}€ (maximum price fluctuation per day)")
     print(f"     ├── P_0 = {P_0}€ (initial product price)")
     print(
-        f"     └── fixed_q = {fixed_q} (Probability for price increase/decrease is{' ' if fixed_q else ' not '}fixed)"
+        f"     └── fixed_q = {fixed_q} (Probability for price increase is{' ' if fixed_q else ' not '}fixed)"
     )
     sim = PriceSimulation(N, delta, P_0, fixed_q)
     print("  *  Total Number of States:", len(sim.S))
