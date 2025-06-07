@@ -109,3 +109,16 @@ p(i, a_0, j) =
     - Aus \(g_j = h \gt 0 \) folgt \(h = g_i + k -\delta \) oder äquivalent \(k = h - g_i + \delta \Rightarrow P(g_j = h) = P(k = h - g_i + \delta)\)
       Da \(k \in \{0, \ldots, 2\delta\},  k \sim B(k \mid 2\delta, q), q \in [0,1]  \), es folgt:
       \(P(k = h - g_i + \delta) = \binom{2\delta}{h - g_i + \delta} q^{h - g_i + \delta} (1 - q)^{\delta - h + g_i} \)
+
+### q
+
+In Teilaufgabe (d):
+
+\[
+q =
+\begin{cases}
+1 - \mathcal{P}_t / (2\mathcal{P}_0)
+, & \text{falls } \mathcal{P}_t \leq 2\mathcal{P}_0 \\
+0, & \text{sonst}
+\end{cases}
+\]
