@@ -75,28 +75,27 @@ class PriceAgent:
         return policy
 
 
-def run_sim(N, delta, P_0, fixed_q):
+def run_sim(N, delta, P_0, fixed_q, gamma=1.0):
     """
     Runs a price simulation with the given parameters and saves the optimal value function and policy.
 
     :param N: Number of days in the simulation
     :param delta: Maximum price fluctuation per day
     :param P_0: Initial product price
-    :param fixed_q: Whether the probability for price increase is fixed
+    :param fixed_q: Whether to use fixed q
+    :param gamma: Discount factor for future rewards
     """
     print(f"Running price simulation:")
     print("  *  Parameters:")
     print(f"     ├── N = {N} days")
     print(f"     ├── delta = {delta}€ (maximum price fluctuation per day)")
     print(f"     ├── P_0 = {P_0}€ (initial product price)")
-    print(
-        f"     └── fixed_q = {fixed_q} (Probability for price increase is{' ' if fixed_q else ' not '}fixed)"
-    )
+    print(f"     └── fixed_q = {fixed_q} (q is{' ' if fixed_q else ' not '}fixed)")
     sim = PriceSimulation(N, delta, P_0, fixed_q)
     print("  *  Total Number of States:", len(sim.S))
     # print("  *  Daily Price Range:", sim.daily_price_range)
 
-    agent = PriceAgent(simulation=sim)
+    agent = PriceAgent(simulation=sim, gamma=gamma)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     sim_dir = os.path.join(current_dir, f"{N}_{delta}_{P_0}_{fixed_q}")
