@@ -121,10 +121,8 @@ if __name__ == "__main__":
     # Run simulations with different parameters
 
     run_sim(N=42, delta=5, P_0=300, fixed_q=True)
-    run_sim(N=10, delta=5, P_0=25, fixed_q=True)
-    run_sim(N=14, delta=3, P_0=25, fixed_q=True)
-
     run_sim(N=42, delta=5, P_0=300, fixed_q=False)
-    run_sim(N=10, delta=5, P_0=25, fixed_q=False)
-    run_sim(N=14, delta=3, P_0=25, fixed_q=False)
+
+    run_sim(N=7, delta=4, P_0=20, fixed_q=True)
+    run_sim(N=7, delta=4, P_0=20, fixed_q=False)
 # %%
