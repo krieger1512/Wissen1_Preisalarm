@@ -123,6 +123,6 @@ if __name__ == "__main__":
     run_sim(N=42, delta=5, P_0=300, fixed_q=True)
     run_sim(N=42, delta=5, P_0=300, fixed_q=False)
 
-    run_sim(N=7, delta=4, P_0=20, fixed_q=True)
-    run_sim(N=7, delta=4, P_0=20, fixed_q=False)
+    run_sim(N=10, delta=4, P_0=20, fixed_q=True)
+    run_sim(N=10, delta=4, P_0=20, fixed_q=False)
 # %%

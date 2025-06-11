@@ -126,7 +126,7 @@ class PriceSimulation:
                         if current_state[1] <= 2 * self.P_0
                         else 0.0
                     )
-                if next_state[1] == 0 and self.delta - current_state[1] >= 0:
+                if next_state[1] == 0:
                     return sum(
                         comb(2 * self.delta, m) * q**m * (1 - q) ** (2 * self.delta - m)
                         for m in range(0, self.delta - current_state[1] + 1)

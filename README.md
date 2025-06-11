@@ -65,7 +65,7 @@ Umgangssprachlich: Kosten entstehen ausschließlich im Moment des Kaufes.
 ### p
 
 Übergangwahrscheinlichkeiten \(p: S \times A \times S \rightarrow [0,1]\)
-- "0" ist absorbierend (wird nicht mehr verlassen):
+- "0" ist absorbierend:
 \[
 \forall a \in A: \quad
 p("0", a, j) =
@@ -91,7 +91,6 @@ p(i, a_0, j) =
 \sum_{m=0}^{\delta - g_i} \binom{2\delta}{m} q^m (1 - q)^{2\delta - m}, & \text{falls } t_j - t_i = 1 \\
    & \text{und } \exist k \in \{0, \ldots, 2\delta\}: g_j = max(0, g_i + k -\delta)\\
    & \text{und } g_j = 0 \\
-   & \text{und } \delta - g_i \geq 0 \\
 \binom{2\delta}{h - g_i + \delta} q^{h - g_i + \delta} (1 - q)^{\delta - h + g_i}, & \text{falls } t_j - t_i = 1 \\
    & \text{und } \exist k \in \{0, \ldots, 2\delta\}:g_j = max(0, g_i + k -\delta)\\
    & \text{und } g_j = h \gt 0 \\
@@ -105,8 +104,8 @@ p(i, a_0, j) =
     - \(g_j = 0 \Leftrightarrow g_i + k -\delta \leq 0 \Leftrightarrow  k \leq \delta - g_i \Rightarrow P(g_j=0) = P(k \leq \delta - g_i)\) 
       Da \(k \in \{0, \ldots, 2\delta\},  k \sim B(k \mid 2\delta, q), q \in [0,1]  \), es folgt: 
 
-      Wenn \(\delta - g_i \geq 0\): \(P(k \leq \delta - g_i) = \sum_{m=0}^{\delta - g_i} \binom{2\delta}{m} q^m (1 - q)^{2\delta - m} \)
-    - Aus \(g_j = h \gt 0 \) folgt \(h = g_i + k -\delta \) oder äquivalent \(k = h - g_i + \delta \Rightarrow P(g_j = h) = P(k = h - g_i + \delta)\)
+      \(P(k \leq \delta - g_i) = \sum_{m=0}^{\delta - g_i} \binom{2\delta}{m} q^m (1 - q)^{2\delta - m} \)
+    - \(g_j = h \gt 0 \Leftrightarrow k = h - g_i + \delta \Rightarrow P(g_j = h) = P(k = h - g_i + \delta)\)
       Da \(k \in \{0, \ldots, 2\delta\},  k \sim B(k \mid 2\delta, q), q \in [0,1]  \), es folgt:
       \(P(k = h - g_i + \delta) = \binom{2\delta}{h - g_i + \delta} q^{h - g_i + \delta} (1 - q)^{\delta - h + g_i} \)
 
