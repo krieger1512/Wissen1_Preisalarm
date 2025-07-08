@@ -1,6 +1,9 @@
 # %%
 from PriceSimulation import PriceSimulation
 import os
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 
 class PriceAgent:
@@ -74,6 +77,94 @@ class PriceAgent:
             ).replace("'", "")
         return policy
 
+    def visualize_policy(self, policy, sim_dir):
+        """
+        Visualizes the optimal policy and saves the visualization to the specified directory.
+
+        :param policy: A dictionary mapping states to actions
+        :param sim_dir: Directory to save the visualization
+        """
+
+        day_range = np.array(self.sim.T)
+        price_range = np.array(self.sim.daily_price_range[self.sim.N])
+        matrix_height = len(day_range)
+        matrix_width = len(price_range)
+
+        day_index = {day: i for i, day in enumerate(day_range)}
+        price_index = {price: i for i, price in enumerate(price_range)}
+
+        # Create matrices for states and actions
+        state_matrix = np.full((matrix_height, matrix_width), "", dtype=object)
+        action_matrix = np.full((matrix_height, matrix_width), -1)
+        for state, decision in policy.items():
+            if state != "0":
+                state_day = state[0]
+                state_price = state[1]
+                state_matrix[day_index[state_day], price_index[state_price]] = (
+                    f"{state_day}, {state_price}"
+                )
+                action = decision.split(" => ")[1].strip("[]").split(", ")
+                if len(action) == 2:
+                    action_matrix[day_index[state_day], price_index[state_price]] = 2
+                elif len(action) == 1:
+                    if action[0] == self.sim.A[0]:
+                        action_matrix[
+                            day_index[state_day], price_index[state_price]
+                        ] = 0
+                    elif action[0] == self.sim.A[1]:
+                        action_matrix[
+                            day_index[state_day], price_index[state_price]
+                        ] = 1
+
+        # Create a color matrix based on the action matrix and color map
+        color_map = {
+            -1: "white",  # No action
+            0: "blue",  # Wait
+            1: "orange",  # Buy
+            2: "gray",  # Both actions
+        }
+        C_colors = np.empty((matrix_height, matrix_width, 3))
+        for i in range(matrix_height):
+            for j in range(matrix_width):
+                C_colors[i, j] = mcolors.to_rgb(color_map[action_matrix[i, j]])
+
+        # Plot the colored grid
+        cell_size = 30.75 / max(matrix_height, matrix_width)  # in inches
+        fig, ax = plt.subplots(
+            figsize=(matrix_width * cell_size, matrix_height * cell_size)
+        )
+        ax.imshow(C_colors, extent=[0, matrix_width, 0, matrix_height])
+
+        # Add state label to each cell
+        for i in range(matrix_height):
+            for j in range(matrix_width):
+                text_color = "white" if action_matrix[i, j] == 0 else "black"
+                ax.text(
+                    j + 0.5,
+                    len(day_range) - i - 0.5,
+                    state_matrix[i, j],
+                    va="center",
+                    ha="center",
+                    color=text_color,
+                    fontsize=(cell_size * 0.9 if cell_size < 0.1 else 15 * cell_size),
+                )
+
+        # Set up gridlines and remove ticks
+        ax.set_xticks(np.arange(matrix_width + 1))
+        ax.set_yticks(np.arange(matrix_height + 1))
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.grid(color="black", linewidth=0.5)
+        ax.set_xlim(0, matrix_width)
+        ax.set_ylim(0, matrix_height)
+        ax.invert_yaxis()  # To make row 0 appear at the top like a matrix
+        plt.tight_layout()
+        plt.savefig(
+            os.path.join(sim_dir, "optimal_policy_visualization.jpg"),
+            dpi=900,
+            bbox_inches="tight",
+        )
+
 
 def run_sim(N, delta, P_0, fixed_q, gamma=1.0):
     """
@@ -114,6 +205,11 @@ def run_sim(N, delta, P_0, fixed_q, gamma=1.0):
         for state, action in optimal_policy.items():
             f.write(f"{state}: {action}\n")
     print("     └── Optimal policy extracted and saved.")
+
+    print("  *  Visualizing optimal policy ...")
+    agent.visualize_policy(optimal_policy, sim_dir)
+    print("     └── Visualization saved.")
+
     print(f"  *  Stored results in directory: {N}_{delta}_{P_0}_{fixed_q}\n")
 
 

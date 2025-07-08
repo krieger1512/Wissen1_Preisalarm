@@ -39,6 +39,7 @@ class PriceSimulation:
                 for k in range(0, 2 * self.delta + 1):
                     current_price_range.append(max(0, price + k - self.delta))
             current_price_range = list(set(current_price_range))
+            current_price_range.sort()
             daily_price_range[t] = current_price_range
         self.daily_price_range = daily_price_range
 
